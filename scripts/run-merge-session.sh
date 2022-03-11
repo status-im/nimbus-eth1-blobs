@@ -17,6 +17,8 @@ min_peers=${NIMBUS_SESSION_MIN_PEERS:-2}
 # Unique log data and database folder (relative to current directory)
 datadir=${NIMBUS_SESSION_DATADIR:-./datadir-$name}
 
+optargs=${NIMBUS_SESSION_OPTARGS}
+
 # -------- no need to change, below -------------
 
 # Name of custom genesis and bootstrap files
@@ -292,8 +294,10 @@ test yes != "$start" || (
       --terminal-total-difficulty:$ttd \
       --min-sync-peers:$min_peers \
       --tcp-port:$port \
+      $optargs \
       --prune-mode:full \
-      --log-level:TRACE
+      --log-level:TRACE \
+      2>&1
 
   ) | stripColors | svlogd $datadir/log
 ) &
