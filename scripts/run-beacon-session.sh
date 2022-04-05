@@ -45,13 +45,17 @@ num_backlogs=40
 
 # Base directory for finding objects in the Beacon file system
 find_prefix="`dirname $0` . .. ../.."
+find_prefix="$find_prefix ../nimbus-eth1"
 find_prefix="$find_prefix    go-ethereum ../nethermind    nimbus-eth1-blobs"
 find_prefix="$find_prefix ../go-ethereum ../nethermind ../nimbus-eth1-blobs"
 
 # Sub-find directory for various items
 find_beacon=". .. build/bin"
 find_yamlconf="merge-testnets/$name $name"
-find_jwtsecret="datadir-geth-$name$instance datadir-$name$instance"
+find_jwtsecret=
+find_jwtsecret="$find_jwtsecret datadir-geth-$name$instance"
+find_jwtsecret="$find_jwtsecret datadir-nimbus-$name"
+find_jwtsecret="$find_jwtsecret datadir-$name$instance"
 
 # ------------------------------------------------------------------------------
 # Helpers

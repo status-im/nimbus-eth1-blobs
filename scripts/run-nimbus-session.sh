@@ -12,7 +12,7 @@ port=${NIMBUS_SESSION_PORT:-30308}
 datadir=${NIMBUS_SESSION_DATADIR:-./datadir-nimbus-$name}
 
 # # Enable websockets, rpc, etc,
-# exelayer=${NIMBUS_SESSION_EXELAYER:-no}
+exelayer=${NIMBUS_SESSION_EXELAYER:-no}
 
 # Connect locally without discovery, static peer file as argument
 localpeer=${NIMBUS_SESSION_LOCALPEER}
@@ -51,20 +51,22 @@ test -z "$localpeer" || {
   optargs="$optargs --nat=None"
 }
 
-# # Run an Execution Layer Client (use the same ports as geth)
-# test yes != "$exelayer" || {
-#    optargs="$optargs --ws=true"
-#    # optargs="$optargs --ws-port=8546"
-#
-#    optargs="$optargs --rpc=true"
-#    # optargs="$optargs --rpc-port=8545"
-#
-#    optargs="$optargs --engine-api=true"
-#    # optargs="$optargs --engine-api-port=8550"
-#
-#    optargs="$optargs --engine-api-ws=true"
-#    # optargs="$optargs --engine-api-ws-port=8551"
-# }
+# Run an Execution Layer Client (using the same ports as geth)
+test yes != "$exelayer" || {
+   optargs="$optargs --ws=true"
+   optargs="$optargs --ws-port=8551" # 8546
+
+   #optargs="$optargs --rpc=true"
+   #optargs="$optargs --rpc-port=8545"
+
+   #optargs="$optargs --engine-api=true"
+   #optargs="$optargs --engine-api-port=8550"
+
+   #optargs="$optargs --engine-api-ws=true"
+   #optargs="$optargs --engine-api-ws-port=8551"
+
+   optargs="$optargs --jwt-secret=./jwtsecret"
+}
 
 # ------------------------------------------------------------------------------
 # Helpers
@@ -303,6 +305,16 @@ test yes != "$start" || (
   *) optargs="$optargs --network=$name"
   esac
 
+  # RPC authorisation seed, might not be needed though
+  test yes != "$exelayer" -o -s "$datadir/jwtsecret" || (
+      umask 377
+      rm -f "$datadir/jwtsecret"
+      {
+	  echo 0x
+	  openssl rand -hex 32
+	  # echo $session_key
+      } | tr -d '\n' > "$datadir/jwtsecret"
+  )
 
   test yes != "$nohup" || {
      trap "echo '*** $self: NOHUP ignored'" HUP

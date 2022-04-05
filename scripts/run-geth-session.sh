@@ -325,6 +325,7 @@ test yes != "$start" || (
       umask 377
       rm -f "$datadir/jwtsecret"
       {
+	  echo 0x
 	  openssl rand -hex 32
 	  # echo $session_key
       } | tr -d '\n' > "$datadir/jwtsecret"
