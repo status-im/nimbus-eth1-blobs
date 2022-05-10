@@ -58,7 +58,13 @@ session_key=`echo $port |
 genesis_json=geth-$name.json
 
 # Per-network bootstrap nodes
-enodes_kiln="enode://c354db99124f0faf677ff0e75c3cbbd568b2febc186af664e0c51ac435609badedc67a18a63adb64dacc1780a28dcefebfc29b83fd1a3f4aa3c0eb161364cf94@164.92.130.5:30303"
+enodes_kiln="\
+enode://c354db99124f0faf677ff0e75c3cbbd568b2febc186af664e0c51ac435609badedc67a18a63adb64dacc1780a28dcefebfc29b83fd1a3f4aa3c0eb161364cf94@164.92.130.5:30303"
+
+enodes_mainshadow1="\
+enode://36ad5c6e0a10e58234cf9e17bd07107f1ed69659d27d3f0510bc9d8c109d6898d4bb7e20a64e69ee13fc8cc67e0a7291a09f6efd5a6ee26b26ad99d8f8458717@157.230.27.43:30303,\
+enode://3121479bdb80ad8addab60694083ee83706e47c05523cdda4cbdaf5683794d67b3dbcad848a085dd823d9fb60df3483b50459950d5d9ec23e3373e7bd58e5819@165.227.100.193:30303,\
+enode://06899e1abf67b53dd0c6e10dafa238c7b71e361583353c928fed2aa7642d05e3d7755cb3f934bfdcf4fe563996720fb8c74de356d5dda0329b65d1d23a389c90@143.110.188.48:30303"
 
 # Log spooler capacity settings
 logfile_max=80000000
@@ -315,6 +321,11 @@ test yes != "$start" || (
   kiln)
       optargs="$optargs --networkid=1337802"
       optargs="$optargs --bootnodes=$enodes_kiln"
+      init_data=yes
+      ;;
+  mainshadow1)
+      optargs="$optargs --networkid=1"
+      optargs="$optargs --bootnodes=$enodes_mainshadow1"
       init_data=yes
       ;;
   *)  optargs="$optargs --$name"

@@ -297,7 +297,7 @@ test yes != "$start" || (
   bootstrap=`find_file $bootstrap_txt $find_bootstrap`
 
   case "$name" in
-  kiln|devnet4|devnet5)
+  kiln|devnet4|devnet5|mainshadow*)
      genesis=`find_file $genesis_json $find_genesis`
      optargs="$optargs --custom-network=$genesis"
      optargs="$optargs --bootstrap-file=$bootstrap"
