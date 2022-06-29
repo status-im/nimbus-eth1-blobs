@@ -8,6 +8,9 @@ name=${NIMBUS_SESSION_NAME:-kiln}
 # Unique Nimbus TCP/UDP communication port
 port=${NIMBUS_SESSION_PORT:-30308}
 
+# Unique Nimbus websocket ports base
+w3base=${NIMBUS_SESSION_W3BASE:-8540}
+
 # Unique log data and database folder (relative to current directory)
 datadir=${NIMBUS_SESSION_DATADIR:-./datadir-nimbus-$name}
 
@@ -16,6 +19,9 @@ exelayer=${NIMBUS_SESSION_EXELAYER:-no}
 
 # Connect locally without discovery, static peer file as argument
 localpeer=${NIMBUS_SESSION_LOCALPEER}
+
+# Override nimbus-eth1 dir
+nimbus_eth1=${NIMBUS_SESSION_ETH1DIR:-nimbus-eth1}
 
 # Generic options
 optargs=${NIMBUS_SESSION_OPTARGS:-'--nat=None'}
@@ -34,8 +40,8 @@ num_backlogs=40
 
 # Base directory for finding objects in the Nimbus file system
 find_prefix="`dirname $0` . .. ../.."
-find_prefix="$find_prefix    nimbus-eth1    nimbus-eth1-blobs"
-find_prefix="$find_prefix ../nimbus-eth1 ../nimbus-eth1-blobs"
+find_prefix="$find_prefix    $nimbus_eth1    nimbus-eth1-blobs"
+find_prefix="$find_prefix ../$nimbus_eth1 ../nimbus-eth1-blobs"
 
 # Sub-find directory for various items
 find_nimbus=". .. build"
@@ -53,19 +59,24 @@ test -z "$localpeer" || {
 
 # Run an Execution Layer Client (using the same ports as geth)
 test yes != "$exelayer" || {
-   optargs="$optargs --ws=true"
-   optargs="$optargs --ws-port=8551" # 8546
+    rpc_port=`expr $w3base +  5`  # 8545
+    ws_port=` expr $w3base +  6`  # 8546
+    api_port=`expr $w3base + 10`  # 8550
+    aws_port=`expr $w3base + 11`  # 8551
+    
+    optargs="$optargs --ws=true"
+    optargs="$optargs --ws-port=$ws_port"
 
-   #optargs="$optargs --rpc=true"
-   #optargs="$optargs --rpc-port=8545"
+    #optargs="$optargs --rpc=true"
+    #optargs="$optargs --rpc-port=$rpc_port"
 
-   #optargs="$optargs --engine-api=true"
-   #optargs="$optargs --engine-api-port=8550"
+    #optargs="$optargs --engine-api=true"
+    #optargs="$optargs --engine-api-port=$api_port"
 
-   #optargs="$optargs --engine-api-ws=true"
-   #optargs="$optargs --engine-api-ws-port=8551"
+    #optargs="$optargs --engine-api-ws=true"
+    #optargs="$optargs --engine-api-ws-port=$aws-port"
 
-   optargs="$optargs --jwt-secret=./jwtsecret"
+    optargs="$optargs --jwt-secret=./jwtsecret"
 }
 
 # ------------------------------------------------------------------------------
@@ -297,12 +308,12 @@ test yes != "$start" || (
   bootstrap=`find_file $bootstrap_txt $find_bootstrap`
 
   case "$name" in
-  kiln|devnet4|devnet5|mainshadow*)
-     genesis=`find_file $genesis_json $find_genesis`
+  mainnet|ropsten|rinkeby|goerli|kovan)
+      optargs="$optargs --network=$name"
+      ;;
+  *) genesis=`find_file $genesis_json $find_genesis`
      optargs="$optargs --custom-network=$genesis"
      optargs="$optargs --bootstrap-file=$bootstrap"
-     ;;
-  *) optargs="$optargs --network=$name"
   esac
 
   # RPC authorisation seed, might not be needed though
