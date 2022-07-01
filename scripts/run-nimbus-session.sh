@@ -308,7 +308,7 @@ test yes != "$start" || (
   bootstrap=`find_file $bootstrap_txt $find_bootstrap`
 
   case "$name" in
-  mainnet|ropsten|rinkeby|goerli|kovan)
+  mainnet|ropsten|rinkeby|goerli|kovan|sepolia)
       optargs="$optargs --network=$name"
       ;;
   *) genesis=`find_file $genesis_json $find_genesis`
