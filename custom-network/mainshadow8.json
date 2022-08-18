@@ -20,7 +20,7 @@
     "terminalTotalDifficulty": 53290823313153069154304,
     "ethash": {}
   },
-  "genesis" : { /* added for nimbus */
+  "genesis": { /* added for nimbus */
   "nonce": "0x42",
   "timestamp": "0x0",
   "extraData": "0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa",
