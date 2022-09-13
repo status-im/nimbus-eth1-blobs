@@ -382,6 +382,8 @@ test yes != "$logs" || {
       -e 'file=kademlia.nim:' \
       -e 'Waiting for more peers' \
       -e 'dropped in rlpxAccept.*remote=Node\[local\]' \
+      -e 'Discarding New' \
+      -e 'Discarding Trans' \
       -e '>>> [pf][io]' \
       -e '<<< [pf][io]'
 }

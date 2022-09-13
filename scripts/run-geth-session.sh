@@ -27,7 +27,7 @@ datadir=${GETH_SESSION_DATADIR:-./datadir-geth-$name$instance}
 server_api=${GETH_SERVER_API:-no}
 
 # Adding generic options
-# optargs=${GETH_SESSION_OPTARGS:-'--nat=none'}
+optargs=${GETH_SESSION_OPTARGS:-''}
 # optargs=${GETH_SESSION_OPTARGS:-"$optargs xxxxx"}
 
 # ------------------------------------------------------------------------------
