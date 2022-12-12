@@ -2,6 +2,9 @@
 
 self=${NIMBUS_SESSION_SELF:-`basename "$0"`}
 
+# Prefix nimbus command, e.g. gdbserver
+exepfx=${NIMBUS_EXEPFX}
+
 # Network name (used below for easy setup)
 name=${NIMBUS_SESSION_NAME:-kiln}
 
@@ -342,7 +345,7 @@ test yes != "$start" || (
     } >./log/config
 
     set -x
-    ${nimbus:-nimbus} \
+    ${exepfx} ${nimbus:-nimbus} \
       --data-dir:./data \
       --tcp-port:$port \
       $optargs \

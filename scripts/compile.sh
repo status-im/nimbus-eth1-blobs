@@ -1,10 +1,17 @@
 #! /bin/sh
 
+self=`basename "$0"`
 default_branch=master
+
+usage() {
+  echo "Usage: $self [<branch>] [NIMFLAGS=--debugger:native]" >&2
+  exit 2
+}
 
 case "$1" in
 *=*|'') branch=$default_branch ;;
-*)      branch=${1:-$default_branch};shift
+-*|\?*) usage ;;
+*)      branch=${1:-$default_branch}; shift
 esac
 
 parking=parking-lsnglawngflnswfslkmlknm
