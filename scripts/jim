@@ -1,0 +1,34 @@
+#! /bin/sh
+# Jordan's nim wrapper
+
+ARGS=
+if [ 'xc' = "x$1" -a 'x-r' = "x$2" -a 'x--verbosity:0' = "x$3" ]
+then
+  shift 3
+  ARGS="$ARGS c -r --verbosity:0 --colors:off"
+  ARGS="$ARGS --hint[XDeclaredButNotUsed]:off"
+  ARGS="$ARGS --hint[ConvFromXtoItselfNotNeeded]:off"
+  ARGS="$ARGS --hint[Processing]:off"
+
+  (echo "$*" | grep -q d:chronicles_log_level=) || {
+      ARGS="$ARGS -d:chronicles_log_level=TRACE"
+      ARGS="$ARGS -d:chronicles_runtime_filtering:1"
+  }
+fi
+
+NIMBUS_ETH1=/status/nimbus-eth1
+PATH=$NIMBUS_ETH1:$PATH
+
+# run it from NIMBUS_ETH1 if absolute path
+(
+    # avoid printing "(..)/vendor/*':  No such file or directory"
+    if echo "$*" | grep -e ' /[^ ]*$' >/dev/null
+    then
+	cd $NIMBUS_ETH1
+    fi
+    
+    set -x
+    exec env.sh nim $ARGS "$@"
+)
+
+# End
