@@ -12,7 +12,7 @@ name=${NIMBUS_SESSION_NAME:-kiln}
 port=${NIMBUS_SESSION_PORT:-30308}
 
 # Unique Nimbus websocket ports base
-w3base=${NIMBUS_SESSION_W3BASE:-8540}
+aws_port=${NIMBUS_SESSION_AWSPORT:-8551}
 
 # Unique log data and database folder (relative to current directory)
 datadir=${NIMBUS_SESSION_DATADIR:-./datadir-nimbus-$name}
@@ -62,22 +62,21 @@ test -z "$localpeer" || {
 
 # Run an Execution Layer Client (using the same ports as geth)
 test yes != "$exelayer" || {
-    rpc_port=`expr $w3base +  5`  # 8545
-    ws_port=` expr $w3base +  6`  # 8546
-    api_port=`expr $w3base + 10`  # 8550
-    aws_port=`expr $w3base + 11`  # 8551
-    
-    optargs="$optargs --ws=true"
-    optargs="$optargs --ws-port=$ws_port"
+    rpc_port=`expr $aws_port - 6`  # 8545
+    ws_port=` expr $aws_port - 5`  # 8546
+    api_port=`expr $aws_port - 1`  # 8550
+
+    #optargs="$optargs --ws=true"
+    #optargs="$optargs --ws-port=$ws_port"
 
     #optargs="$optargs --rpc=true"
     #optargs="$optargs --rpc-port=$rpc_port"
 
-    #optargs="$optargs --engine-api=true"
-    #optargs="$optargs --engine-api-port=$api_port"
+    optargs="$optargs --engine-api=true"
+    optargs="$optargs --engine-api-port=$api_port"
 
-    #optargs="$optargs --engine-api-ws=true"
-    #optargs="$optargs --engine-api-ws-port=$aws-port"
+    optargs="$optargs --engine-api-ws=true"
+    optargs="$optargs --engine-api-ws-port=$aws_port"
 
     optargs="$optargs --jwt-secret=./jwtsecret"
 }
