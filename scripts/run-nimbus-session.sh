@@ -26,6 +26,9 @@ localpeer=${NIMBUS_SESSION_LOCALPEER}
 # Override nimbus-eth1 dir
 nimbus_eth1=${NIMBUS_SESSION_ETH1DIR:-nimbus-eth1}
 
+# Override shared RPC secret
+jwtsecret=${NIMBUS_SESSION_JWTSECRET:-./jwtsecret}
+
 # Generic options
 optargs=${NIMBUS_SESSION_OPTARGS:-'--nat=None'}
 
@@ -60,6 +63,19 @@ test -z "$localpeer" || {
   optargs="$optargs --nat=None"
 }
 
+# Sanitise shared secret file name
+case $jwtsecret in
+/tmp/*|/home/*|/*/nimbus-eth1/*|./jwtsecret)
+    ;;
+./log/*|log/*)
+    jwtsecret="./log/`basename $jwtsecret`"
+    ;;
+./data/*|data/*)
+    jwtsecret="./data/`basename $jwtsecret`"
+    ;;
+*)  jwtsecret="./`baseame $jwtsecret`"
+esac
+
 # Run an Execution Layer Client (using the same ports as geth)
 test yes != "$exelayer" || {
     rpc_port=`expr $aws_port - 6`  # 8545
@@ -78,7 +94,7 @@ test yes != "$exelayer" || {
     optargs="$optargs --engine-api-ws=true"
     optargs="$optargs --engine-api-ws-port=$aws_port"
 
-    optargs="$optargs --jwt-secret=./jwtsecret"
+    optargs="$optargs --jwt-secret=$jwtsecret"
 }
 
 # ------------------------------------------------------------------------------
@@ -103,7 +119,7 @@ find_exe() { # Syntax: <exe-name> <subdir> ...
 	    #tee /dev/tty |
 	    xargs -n1 realpath 2>/dev/null
 	# provide argument file name as default
-	echo "$exe"
+	echo "$exe" 2>/dev/null
     } |	sed -eq
 }
 
@@ -319,14 +335,19 @@ test yes != "$start" || (
   esac
 
   # RPC authorisation seed, might not be needed though
-  test yes != "$exelayer" -o -s "$datadir/jwtsecret" || (
+  case $jwtsecret in
+  /tmp/*|/home/*|/*/nimbus-eth1/*)
+     dirpfx= ;;
+  *) dirpfx="$datadir/"
+  esac
+  test yes != "$exelayer" -o -s "$dirpfx$jwtsecret" || (
       umask 377
-      rm -f "$datadir/jwtsecret"
+      rm -f "$dirpfx$jwtsecret"
       {
 	  echo 0x
 	  openssl rand -hex 32
 	  # echo $session_key
-      } | tr -d '\n' > "$datadir/jwtsecret"
+      } | tr -d '\n' > "$dirpfx$jwtsecret"
   )
 
   test yes != "$nohup" || {
