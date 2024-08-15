@@ -6,7 +6,7 @@ self=${NIMBUS_SESSION_SELF:-`basename "$0"`}
 exepfx=${NIMBUS_EXEPFX}
 
 # Network name (used below for easy setup)
-name=${NIMBUS_SESSION_NAME:-kiln}
+name=${NIMBUS_SESSION_NAME:-mainnet}
 
 # Unique Nimbus TCP/UDP communication port
 port=${NIMBUS_SESSION_PORT:-30308}
@@ -228,7 +228,7 @@ done
 test yes != "$help" || {
     cat <<EOF
 $self:
-   The script manages a Nimbus session for Devnet4. It was inspired by running
+   The script manages a Nimbus session for Mainnet. It was inspired by running
    a test node remotely on a cloud exposed server for syncing. The script will
    start the "nimbus" program and maintain database and log files in the folder
    $datadir.
@@ -369,7 +369,6 @@ test yes != "$start" || (
       --data-dir:./data \
       --tcp-port:$port \
       $optargs \
-      --prune-mode:full \
       --log-level:TRACE \
       2>&1
 

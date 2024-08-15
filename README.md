@@ -1,15 +1,8 @@
 # Nimbus Blobs - Debugging data & Scripts
 
 This module contains helpers for test driven development as
-- blockchain data dumps for replay
 - source code examples of how to produce and replay data dumps
 - miscellaneous helper scripts, typically for setting up temporary nodes
-
-# Usage
-
-Typically, this module is intended to live paralell to the *nimbus-eth1* file
-system under the name *nimbus-eth1-blobs*. This makes a reliable rule for
-TDD scripts and tests.
 
 ## Caveat
 
